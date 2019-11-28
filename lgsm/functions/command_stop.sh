@@ -181,6 +181,48 @@ fn_stop_graceful_sdtd(){
 	fn_sleep_time
 }
 
+# Attempts graceful shutdown of Rust server using 'quit' command via websocket rcon.
+# This method requires websocat pre-installed on system
+fn_send_webrcon_cmd(){
+	echo "{\"Identifier\":-1,\"Message\":\"${1}\",\"Name\":\"webrcon\"}" | websocat ws://$ip:$rconport/$rconpassword -1 > /dev/null 2>&1
+}
+
+fn_stop_graceful_webrcon(){
+	# sends notice messages
+	for ((seconds=${1}; seconds >= 1; seconds--)); do
+		if [ "$(($seconds % 10))" == "0" ]; then
+			fn_send_webrcon_cmd "say Maintenance in ${seconds} seconds"
+		fi
+		fn_print_dots "Graceful: Stopping in ${seconds}"
+		sleep 1
+	done
+	fn_send_webrcon_cmd "say Maintenance in progress"
+
+	fn_print_dots "Graceful: sending \"quit\""
+	fn_script_log_info "Graceful: sending \"quit\""
+	#fn_send_webrcon_cmd "quit"
+	# Waits up to 10 seconds giving the server time to shutdown gracefully.
+	for ((seconds=1; seconds<=10; seconds++)); do
+		check_status.sh
+		if [ "${status}" == "0" ]; then
+			fn_print_ok "Graceful: sending \"quit\": ${seconds}: "
+			fn_print_ok_eol_nl
+			fn_script_log_pass "Graceful: sending \"quit\": OK: ${seconds} seconds"
+			break
+		fi
+		sleep 1
+		fn_print_dots "Graceful: sending \"quit\": ${seconds}"
+	done
+	check_status.sh
+	if [ "${status}" != "0" ]; then
+		fn_print_error "Graceful: sending \"quit\": "
+		fn_print_fail_eol_nl
+		fn_script_log_error "Graceful: sending \"quit\": FAIL"
+	fi
+	fn_sleep_time
+}
+
+
 fn_stop_graceful_select(){
 	if [ "${stopmode}" == "1" ]; then
 		fn_stop_tmux
@@ -202,6 +244,8 @@ fn_stop_graceful_select(){
 		fn_stop_graceful_goldsource
 	elif [ "${stopmode}" == "10" ]; then
 		fn_stop_teamspeak3
+	elif [ "${stopmode}" == "11" ]; then
+		fn_stop_graceful_webrcon 60
 	fi
 }
 
