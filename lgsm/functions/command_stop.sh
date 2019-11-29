@@ -192,12 +192,12 @@ fn_stop_graceful_webrcon(){
 	# sends notice messages
 	for ((seconds=${1}; seconds >= 1; seconds--)); do
 		if [ "$(($seconds % 10))" == "0" ]; then
-			fn_send_webrcon_cmd "say Maintenance in ${seconds} seconds"
+			fn_send_webrcon_cmd "say Server will go down for maintenance in ${seconds} seconds"
 		fi
 		fn_print_dots "Graceful: Stopping in ${seconds}"
 		sleep 1
 	done
-	fn_send_webrcon_cmd "say Maintenance in progress"
+	fn_send_webrcon_cmd "say Maintenance is in progress"
 
 	fn_print_dots "Graceful: sending \"quit\""
 	fn_script_log_info "Graceful: sending \"quit\""
@@ -246,7 +246,7 @@ fn_stop_graceful_select(){
 	elif [ "${stopmode}" == "10" ]; then
 		fn_stop_teamspeak3
 	elif [ "${stopmode}" == "11" ]; then
-		fn_stop_graceful_webrcon 60
+		fn_stop_graceful_webrcon 300
 	fi
 }
 
