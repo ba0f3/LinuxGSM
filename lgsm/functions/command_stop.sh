@@ -201,7 +201,7 @@ fn_stop_graceful_webrcon(){
 
 	fn_print_dots "Graceful: sending \"quit\""
 	fn_script_log_info "Graceful: sending \"quit\""
-	#fn_send_webrcon_cmd "quit"
+	fn_send_webrcon_cmd "quit"
 	# Waits up to 10 seconds giving the server time to shutdown gracefully.
 	for ((seconds=1; seconds<=10; seconds++)); do
 		check_status.sh
