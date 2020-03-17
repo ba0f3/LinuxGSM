@@ -185,7 +185,7 @@ fn_stop_graceful_sdtd(){
 # This method requires websocat pre-installed on system
 # https://github.com/vi/websocat#installation
 fn_send_webrcon_cmd(){
-	echo "{\"Identifier\":-1,\"Message\":\"${1}\",\"Name\":\"webrcon\"}" | websocat ws://$ip:$rconport/$rconpassword -1 > /dev/null 2>&1
+	echo "{\"Identifier\":-1,\"Message\":\"${1}\",\"Name\":\"webrcon\"}" | websocat ws://$ip:$rconport/$rconpassword -1 & > /dev/null 2>&1
 }
 
 fn_stop_graceful_webrcon(){
