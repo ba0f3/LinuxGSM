@@ -244,7 +244,7 @@ fn_stop_graceful_select(){
 	elif [ "${stopmode}" == "9" ]; then
 		fn_stop_graceful_goldsource
 	elif [ "${stopmode}" == "10" ]; then
-		fn_stop_graceful_webrcon 300
+		fn_stop_graceful_webrcon 45
 	fi
 }
 
